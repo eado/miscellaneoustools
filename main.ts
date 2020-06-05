@@ -5,7 +5,7 @@ const token = JSON.parse(readFileSync("config.json", 'utf8')).token
 
 const client = new Client();
 
-const messageCache: {[id: string]: Message | null} = {}
+const messageCache: {[id: string]: Message[]} = {}
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}`)
@@ -16,7 +16,11 @@ client.on('messageDelete', (message) => {
         return
     }
     console.log(message)
-    messageCache[message.channel.id] = message
+    if (messageCache[message.channel.id]) {
+        messageCache[message.channel.id].push(message)
+    } else {
+        messageCache[message.channel.id] = [message]
+    }
 })
 
 client.on('message', (message) => {
@@ -28,14 +32,13 @@ client.on('message', (message) => {
         const method = message.content.split(" ")[0].replace("//", "")
 
         if (method == "snipe") {
-            const deletedMessage = messageCache[message.channel.id]
+            const deletedMessage = messageCache[message.channel.id].pop()
             if (!deletedMessage) {
                 message.channel.send("There are no recently deleted messages!")
                 return
             }
 
             message.channel.send(`${deletedMessage.author}: ${deletedMessage.content}`)
-            messageCache[message.channel.id] = null
         } else if (method == "help") {
             message.channel.send("Welcome to the Miscellaneous Tools Bot! It currently doesn't do much, but feel free to suggest functionality. \nFunctions:\n- Snipe: Retrieve previously deleted message.")
         }
