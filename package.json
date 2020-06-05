@@ -11,7 +11,8 @@
   "devDependencies": {},
   "scripts": {
     "tsc": "tsc",
-    "build": "tsc"
+    "build": "tsc",
+    "run": "tsc && node build/main.js"
   },
   "repository": {
     "type": "git",
