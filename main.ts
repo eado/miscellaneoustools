@@ -32,6 +32,11 @@ client.on('message', (message) => {
         const method = message.content.split(" ")[0].replace("//", "")
 
         if (method == "snipe") {
+            if (!messageCache[message.channel.id]) {
+                message.channel.send("There are no recently deleted messages!")
+                return
+            }
+            
             const deletedMessage = messageCache[message.channel.id].pop()
             if (!deletedMessage) {
                 message.channel.send("There are no recently deleted messages!")
