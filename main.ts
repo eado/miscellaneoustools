@@ -71,7 +71,7 @@ client.on('message', (message) => {
 
             message.channel.send(`${editedMessage.author}: ${editedMessage.content}`)
         } else if (method == "help") {
-            message.channel.send("Welcome to the Miscellaneous Tools Bot! It currently doesn't do much, but feel free to suggest functionality. \nFunctions:\n- Snipe: Retrieve previously deleted message.")
+            message.channel.send("Welcome to the Miscellaneous Tools Bot! It currently doesn't do much, but feel free to suggest functionality. \nFunctions:\n- snipe: Retrieve previously deleted messages\n- editsnipe: Retrieve previous revisions of messages")
         }
     }
 })
