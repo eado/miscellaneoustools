@@ -44,7 +44,7 @@ client.on('message', (message) => {
     if (message.content.startsWith("//")) {
         const method = message.content.split(" ")[0].replace("//", "")
 
-        if (method == "snipe") {
+        if (method == "snipe" || method == "s") {
             if (!messageCache[message.channel.id]) {
                 message.channel.send("There are no recently deleted messages!")
                 return
@@ -57,7 +57,7 @@ client.on('message', (message) => {
             }
 
             message.channel.send(`${deletedMessage.author}: ${deletedMessage.content}`)
-        } else if (method == "editsnipe") {
+        } else if (method == "editsnipe" || method == "e") {
             if (!messageEditCache[message.channel.id]) {
                 message.channel.send("There are no recently edited messages!")
                 return
