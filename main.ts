@@ -56,7 +56,13 @@ client.on('message', (message) => {
                 return
             }
 
-            message.channel.send(`${deletedMessage.author}: ${deletedMessage.content}`)
+            let messageString = `${deletedMessage.author}: ${deletedMessage.content}`
+
+            for (let attach of Array.from(deletedMessage.attachments.values())) {
+                messageString += attach.proxyURL + " "
+            }
+
+            message.channel.send(messageString)
         } else if (method == "editsnipe" || method == "e") {
             if (!messageEditCache[message.channel.id]) {
                 message.channel.send("There are no recently edited messages!")
@@ -69,9 +75,14 @@ client.on('message', (message) => {
                 return
             }
 
-            message.channel.send(`${editedMessage.author}: ${editedMessage.content}`)
+            let messageString = `${editedMessage.author}: ${editedMessage.content}`
+            for (let attach of Array.from(editedMessage.attachments.values())) {
+                messageString += attach.proxyURL + " "
+            }
+
+            message.channel.send(messageString)
         } else if (method == "help") {
-            message.channel.send("Welcome to the Miscellaneous Tools Bot! It currently doesn't do much, but feel free to suggest functionality. \nFunctions:\n- snipe: Retrieve previously deleted messages\n- editsnipe: Retrieve previous revisions of messages")
+            message.channel.send("Welcome to the Miscellaneous Tools Bot! It currently doesn't do much, but feel free to suggest functionality. \nFunctions:\n- (s)nipe: Retrieve previously deleted messages\n- (e)ditsnipe: Retrieve previous revisions of messages")
         }
     }
 })
