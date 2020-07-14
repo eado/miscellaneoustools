@@ -1,5 +1,6 @@
-import { Client, Message, MessageEmbed } from 'discord.js';
+import { Client, Message, Collection, Role } from 'discord.js';
 import { readFileSync } from 'fs';
+import moment from 'moment';
 
 const token = JSON.parse(readFileSync("config.json", 'utf8')).token
 
@@ -7,6 +8,7 @@ const client = new Client();
 
 const messageCache: {[id: string]: Message[]} = {}
 const messageEditCache: {[id: string]: Message[]} = {}
+const rolesCache: {[id: string]: Collection<string, Role>} = {}
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}`)
@@ -56,7 +58,14 @@ client.on('message', (message) => {
                 return
             }
 
-            let messageString = `${deletedMessage.author}: ${deletedMessage.content}`
+            let messageString = ""
+            if (deletedMessage.content.startsWith("<@") && deletedMessage.content.startsWith("> @", 20)) {
+                messageString = deletedMessage.content
+            } else {
+                let messageTime = moment(deletedMessage.createdTimestamp).format('MMMM Do, h:mm:ss a')
+
+                messageString = `${deletedMessage.author} @${messageTime}: ${deletedMessage.content}`
+            }
 
             for (let attach of Array.from(deletedMessage.attachments.values())) {
                 messageString += attach.proxyURL + " "
@@ -75,12 +84,53 @@ client.on('message', (message) => {
                 return
             }
 
-            let messageString = `${editedMessage.author}: ${editedMessage.content}`
+            let messageTime = moment(editedMessage.createdTimestamp).format('MMMM Do, h:mm:ss a')
+            let messageString = `${editedMessage.author} @${messageTime}: ${editedMessage.content}`
+
             for (let attach of Array.from(editedMessage.attachments.values())) {
                 messageString += attach.proxyURL + " "
             }
 
             message.channel.send(messageString)
+        } else if (method == "gulag" || method == "g") {
+            const user = message.author
+            const member = message.guild.member(user)
+            if (member.hasPermission("ADMINISTRATOR")) {
+                const gulaged = message.mentions.users.first()
+
+                if (!gulaged) {
+                    message.channel.send("Make sure to mention a user to gulag.")
+                    return
+                }
+                const gulagedMember = message.guild.member(gulaged)
+                const roles = gulagedMember.roles
+                rolesCache[gulagedMember.id] = roles
+                gulagedMember.setRoles(message.guild.roles.filter(role => role.name === "UltraGulag"))
+                message.channel.send(`${gulaged.username} has been gulaged :(`)
+            } else {
+                message.channel.send("You do not have permission to run that command!")
+            }
+        } else if (method == "ungulag" || method == "u") {
+            const user = message.author
+            const member = message.guild.member(user)
+            if (member.hasPermission("ADMINISTRATOR")) {
+                const ungulaged = message.mentions.users.first()
+                if (!ungulaged) {
+                    message.channel.send("Make sure to mention a user to ungulag.")
+                    return
+                }
+
+                const roles = rolesCache[ungulaged.id]
+                if (!roles) {
+                    message.channel.send("This user isn't currently in the gulag :)")
+                    return
+                }
+                const ungulagedMember = message.guild.member(ungulaged)
+                ungulagedMember.setRoles(roles)
+                message.channel.send(`${ungulaged.username} has been taken out of the gulag :)`)
+            } else {
+                message.channel.send("You do not have permission to run that command!")
+            }
         } else if (method == "help") {
             message.channel.send("Welcome to the Miscellaneous Tools Bot! It currently doesn't do much, but feel free to suggest functionality. \nFunctions:\n- (s)nipe: Retrieve previously deleted messages\n- (e)ditsnipe: Retrieve previous revisions of messages")
         }
