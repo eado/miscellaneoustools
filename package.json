@@ -4,10 +4,10 @@
   "description": "A bot with miscellaneous tools",
   "main": "build/main.js",
   "dependencies": {
-    "@types/node": "^13.7.4",
-    "discord.js": "^11.5.1",
+    "@types/node": "^13.13.14",
+    "discord.js": "^11.6.4",
     "moment": "^2.27.0",
-    "typescript": "^3.8.2"
+    "typescript": "^3.9.6"
   },
   "devDependencies": {},
   "scripts": {

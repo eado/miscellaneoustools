@@ -1,4 +1,4 @@
-import { Client, Message, Collection, Role } from 'discord.js';
+import { Client, Message, Collection, Role, Attachment, RichEmbed } from 'discord.js';
 import { readFileSync } from 'fs';
 import moment from 'moment';
 
@@ -58,20 +58,35 @@ client.on('message', (message) => {
                 return
             }
 
-            let messageString = ""
-            if (deletedMessage.content.startsWith("<@") && deletedMessage.content.startsWith("> @", 20)) {
-                messageString = deletedMessage.content
-            } else {
-                let messageTime = moment(deletedMessage.createdTimestamp).format('MMMM Do, h:mm:ss a')
+            // let messageString = ""
+            // if (deletedMessage.content.startsWith("<@") && deletedMessage.content.startsWith("> @", 20)) {
+            //     messageString = deletedMessage.content
+            // } else {
+            //     let messageTime = moment(deletedMessage.createdTimestamp).format('MMMM Do, h:mm:ss a')
 
-                messageString = `${deletedMessage.author} @${messageTime}: ${deletedMessage.content}`
-            }
+            //     messageString = `${deletedMessage.author} @${messageTime}: ${deletedMessage.content}`
+            // }
 
-            for (let attach of Array.from(deletedMessage.attachments.values())) {
-                messageString += attach.proxyURL + " "
-            }
+            // let attachments: Attachment[] = []
+            // for (let attach of Array.from(deletedMessage.attachments.values())) {
+            //     attachments.push(new Attachment(attach.proxyURL))
+            // }
 
-            message.channel.send(messageString)
+            console.log(deletedMessage)
+            
+            const embed = new RichEmbed()
+                .setTimestamp(deletedMessage.createdTimestamp)
+                .setAuthor(deletedMessage.author.username, deletedMessage.author.avatarURL)
+                .setDescription(deletedMessage.content)
+                .attachFiles(deletedMessage.attachments.map((attach => new Attachment(attach.proxyURL))))
+
+            message.channel.send(embed)
+
+            // if (attachments.length > 1) {
+            //     for (let i = 1; i < attachments.length; i++) {
+            //         message.channel.send(attachments[i])
+            //     }
+            // }
         } else if (method == "editsnipe" || method == "e") {
             if (!messageEditCache[message.channel.id]) {
                 message.channel.send("There are no recently edited messages!")
@@ -87,11 +102,18 @@ client.on('message', (message) => {
             let messageTime = moment(editedMessage.createdTimestamp).format('MMMM Do, h:mm:ss a')
             let messageString = `${editedMessage.author} @${messageTime}: ${editedMessage.content}`
 
+            let attachments: Attachment[] = []
             for (let attach of Array.from(editedMessage.attachments.values())) {
-                messageString += attach.proxyURL + " "
+                attachments.push(new Attachment(attach.proxyURL))
             }
 
-            message.channel.send(messageString)
+            message.channel.send(messageString, attachments[0])
+
+            if (attachments.length > 1) {
+                for (let i = 1; i < attachments.length; i++) {
+                    message.channel.send(attachments[i])
+                }
+            }
         } else if (method == "gulag" || method == "g") {
             const user = message.author
             const member = message.guild.member(user)
