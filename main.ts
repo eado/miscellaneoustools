@@ -1,5 +1,5 @@
-import { Client, Message, Collection, Role } from 'discord.js';
-import { readFileSync } from 'fs';
+import { Client, Message, Collection, Role, TextChannel } from 'discord.js';
+import { readFileSync, appendFileSync, existsSync, writeFileSync } from 'fs';
 import moment from 'moment';
 
 const token = JSON.parse(readFileSync("config.json", 'utf8')).token
@@ -10,8 +10,58 @@ const messageCache: {[id: string]: Message[]} = {}
 const messageEditCache: {[id: string]: Message[]} = {}
 const rolesCache: {[id: string]: Collection<string, Role>} = {}
 
+type Log = { timestamp: number; username: string; content: string; isEdited: boolean; }
+
+const modlogs: Log[] = []
+
+const TIMEOUT = 86400 * 1000
+
+if (existsSync('modlogs.txt')) {
+    const text = readFileSync('modlogs.txt').toString()
+    const logs = text.split("\n")
+    for (let log of logs) {
+        const elog = log.split("#$%^$;'")
+        if (elog.length > 3) {
+            modlogs.push({timestamp: Number(elog[0]), username: elog[1], content: elog[2], isEdited: elog[3] === "true"})
+        }
+    }
+}
+
+setInterval(() => {
+    if (existsSync('modlogs.txt')) {
+        const text = readFileSync('modlogs.txt').toString()
+        const logs = text.split("\n")
+
+        let change = false
+        while (true) {
+            if (logs.length > 0 && logs[0].split("#$%^$;'").length > 1 && Date.now() - Number(logs[0].split("#$%^$;'")[0]) >= TIMEOUT) {
+                logs.shift()
+                change = true
+            } else {
+                if (change) {
+                    writeFileSync('modlogs.txt', logs.join("\n"))
+                }
+                break
+            }
+        }
+    }
+}, 5000)
+
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}`)
+
+    const channel = client.channels.find(ch => ch.id === "733447759834906694") as TextChannel
+
+    setInterval(() => {
+        if (modlogs.length < 1) {
+            return
+        }
+        if ((Date.now() - modlogs[0].timestamp) >= TIMEOUT) {
+            const log = modlogs.shift()
+            channel.send(`${log?.username}${log?.isEdited ? " (Edited)" : ""}: ${log?.content}`)
+        }
+    }, 1)
+    
 })
 
 client.on('messageDelete', (message) => {
@@ -26,7 +76,7 @@ client.on('messageDelete', (message) => {
     }
 })
 
-client.on('messageUpdate', (old, _) => {
+client.on('messageUpdate', (old, n) => {
     if (!old.guild) {
         return
     }
@@ -36,11 +86,23 @@ client.on('messageUpdate', (old, _) => {
     } else {
         messageEditCache[old.channel.id] = [old]
     }
+
+    if (n.channel.id === "700426455066345494") {
+        modlogs.push({timestamp: n.editedTimestamp, username: n.author.username, content: n.content, isEdited: true})
+        appendFileSync('modlogs.txt', `${n.createdTimestamp}#$%^$;'${n.author.username}#$%^$;'${n.content}#$%^$;'true\n`)
+    }
 })
 
 client.on('message', (message) => {
     if (!message.guild) {
         return
+    }
+
+    if (message.channel.id === "700426455066345494") {
+        const content = message.content + " " 
+        + message.attachments.map(attach => attach.proxyURL).join(" ")
+        modlogs.push({timestamp: message.createdTimestamp, username: message.author.username, content: content, isEdited: false})
+        appendFileSync('modlogs.txt', `${message.createdTimestamp}#$%^$;'${message.author.username}#$%^$;'${content}#$%^$;'false\n`)
     }
  
     if (message.content.startsWith("//")) {
