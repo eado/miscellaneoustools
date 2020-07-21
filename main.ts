@@ -8,7 +8,7 @@ const client = new Client();
 
 const messageCache: {[id: string]: Message[]} = {}
 const messageEditCache: {[id: string]: Message[]} = {}
-const rolesCache: {[id: string]: Collection<string, Role>} = {}
+const rolesCache: {[id: string]: {roles: Collection<string, Role>, isSelf: boolean}} = {}
 
 type Log = { timestamp: number; username: string; content: string; isEdited: boolean; }
 
@@ -157,16 +157,25 @@ client.on('message', (message) => {
         } else if (method == "gulag" || method == "g") {
             const user = message.author
             const member = message.guild.member(user)
-            if (member.hasPermission("ADMINISTRATOR")) {
-                const gulaged = message.mentions.users.first()
 
-                if (!gulaged) {
-                    message.channel.send("Make sure to mention a user to gulag.")
+            if (user.id === "638089451054039040") {
+                message.channel.send("no")
+                return
+            }
+            
+            const gulaged = message.mentions.users.first()
+            if (!gulaged) {
+                message.channel.send("Make sure to mention a user to gulag.")
+                return
+            }
+            if (member.hasPermission("ADMINISTRATOR") || gulaged.id === user.id) {
+                const gulagedMember = message.guild.member(gulaged)
+                if (gulagedMember.highestRole.comparePositionTo(member.highestRole) > -1 && gulaged.id != user.id) {
+                    message.channel.send(`${gulaged.username} is either the same or higher than you in the role hierarchy :(`)
                     return
                 }
-                const gulagedMember = message.guild.member(gulaged)
                 const roles = gulagedMember.roles
-                rolesCache[gulagedMember.id] = roles
+                rolesCache[gulagedMember.id] = {roles, isSelf: user.id === gulaged.id}
                 gulagedMember.setRoles(message.guild.roles.filter(role => role.name === "UltraGulag"))
                 message.channel.send(`${gulaged.username} has been gulaged :(`)
             } else {
@@ -175,20 +184,36 @@ client.on('message', (message) => {
         } else if (method == "ungulag" || method == "u") {
             const user = message.author
             const member = message.guild.member(user)
-            if (member.hasPermission("ADMINISTRATOR")) {
-                const ungulaged = message.mentions.users.first()
-                if (!ungulaged) {
-                    message.channel.send("Make sure to mention a user to ungulag.")
+
+            if (user.id === "638089451054039040") {
+                message.channel.send("no")
+                return
+            }
+
+            const ungulaged = message.mentions.users.first()
+            if (!ungulaged) {
+                message.channel.send("Make sure to mention a user to ungulag.")
+                return
+            }
+            if (member.hasPermission("ADMINISTRATOR") || ungulaged.id === user.id) {
+                const ungulagedMember = message.guild.member(ungulaged)
+                if (ungulagedMember.highestRole.comparePositionTo(member.highestRole) > -1 && ungulaged.id != user.id) {
+                    message.channel.send(`${ungulaged.username} is either the same or higher than you in the role hierarchy :(`)
                     return
                 }
 
                 const roles = rolesCache[ungulaged.id]
+
+                if (ungulaged.id === user.id && !roles.isSelf) {
+                    message.channel.send("Someone else put you in the gulag. Please wait until they (or someone else with appropriate permissions) takes you out.")
+                    return
+                }
+
                 if (!roles) {
                     message.channel.send("This user isn't currently in the gulag :)")
                     return
                 }
-                const ungulagedMember = message.guild.member(ungulaged)
-                ungulagedMember.setRoles(roles)
+                ungulagedMember.setRoles(roles.roles)
                 message.channel.send(`${ungulaged.username} has been taken out of the gulag :)`)
             } else {
                 message.channel.send("You do not have permission to run that command!")
