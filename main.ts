@@ -157,7 +157,7 @@ client.on('message', (message) => {
         } else if (method == "gulag" || method == "g") {
             const user = message.author
             const member = message.guild.member(user)
-            if (member.hasPermission("ADMINISTRATOR") || (user.username === "eado" && user.discriminator === "0118")) {
+            if (member.hasPermission("ADMINISTRATOR")) {
                 const gulaged = message.mentions.users.first()
 
                 if (!gulaged) {
@@ -175,7 +175,7 @@ client.on('message', (message) => {
         } else if (method == "ungulag" || method == "u") {
             const user = message.author
             const member = message.guild.member(user)
-            if (member.hasPermission("ADMINISTRATOR") || (user.username === "eado" && user.discriminator === "0118")) {
+            if (member.hasPermission("ADMINISTRATOR")) {
                 const ungulaged = message.mentions.users.first()
                 if (!ungulaged) {
                     message.channel.send("Make sure to mention a user to ungulag.")
