@@ -168,7 +168,7 @@ client.on('message', (message) => {
                 message.channel.send("Make sure to mention a user to gulag.")
                 return
             }
-            if (member.hasPermission("ADMINISTRATOR") || gulaged.id === user.id) {
+            if (member.hasPermission("ADMINISTRATOR")) {
                 const gulagedMember = message.guild.member(gulaged)
                 if (gulagedMember.highestRole.comparePositionTo(member.highestRole) > -1 && gulaged.id != user.id) {
                     message.channel.send(`${gulaged.username} is either the same or higher than you in the role hierarchy :(`)
@@ -195,7 +195,7 @@ client.on('message', (message) => {
                 message.channel.send("Make sure to mention a user to ungulag.")
                 return
             }
-            if (member.hasPermission("ADMINISTRATOR") || ungulaged.id === user.id) {
+            if (member.hasPermission("ADMINISTRATOR")) {
                 const ungulagedMember = message.guild.member(ungulaged)
                 if (ungulagedMember.highestRole.comparePositionTo(member.highestRole) > -1 && ungulaged.id != user.id) {
                     message.channel.send(`${ungulaged.username} is either the same or higher than you in the role hierarchy :(`)
