@@ -50,6 +50,8 @@ setInterval(() => {
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}`)
 
+    client.user.setActivity("Type //help for help")
+
     const channel = client.channels.find(ch => ch.id === "733447759834906694") as TextChannel
 
     setInterval(() => {

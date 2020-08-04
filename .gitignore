@@ -3,3 +3,4 @@ config.json
 build
 .vscode
 modlogs.txt
+test.ts
