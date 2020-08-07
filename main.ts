@@ -222,7 +222,10 @@ client.on('message', (message) => {
             }
         } else if (method == "help" || method == "h") {
             message.channel.send("Welcome to the Miscellaneous Tools Bot! It currently doesn't do much, but feel free to suggest functionality. \nFunctions:\n- (s)nipe: Retrieve previously deleted messages\n- (e)ditsnipe: Retrieve previous revisions of messages\n- (g)ulag: Remove all roles for a user and add an extra role for punishment\n- (u)ngulag: Restore all roles for a user after using (g)ulag\n- (h)elp: Show this help message")
+        } else if (method == "echo") {
+            message.channel.send(message.content.slice(1));   
         }
+        
     }
 })
 
