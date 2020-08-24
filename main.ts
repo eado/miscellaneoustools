@@ -53,24 +53,24 @@ client.on('ready', () => {
     client.user.setActivity("Type //help for help")
 
 
-    const guild = client.guilds.find(guild => guild.name === "Modi Fanclub")
-    const user = client.users.find(user => user.username === "snazz")
-    const member = guild.member(user)
+    // const guild = client.guilds.find(guild => guild.name === "Modi Fanclub")
+    // const user = client.users.find(user => user.username === "snazz")
+    // const member = guild.member(user)
 
-    member.setNickname("")
+    // member.setNickname("")
 
-    // const role = guild.roles.find(role => role.name === "man-tally challenged")
-    // member.addRole(role)
-    // member.removeRole(role)
-    // role.setName("mod")
+    // // const role = guild.roles.find(role => role.name === "man-tally challenged")
+    // // member.addRole(role)
+    // // member.removeRole(role)
+    // // role.setName("mod")
 
-    // member.addRole(role)
+    // // member.addRole(role)
 
-    // const ch = client.channels.find(ch => ch.id === "695520419544825957") as TextChannel
-    // ch.send("I think I can do that.")
+    // // const ch = client.channels.find(ch => ch.id === "695520419544825957") as TextChannel
+    // // ch.send("I think I can do that.")
 
-    // const role = guild.roles.find(role => role.id === "739658073521651787")
-    // role.delete("This was kinda dumb anyway")
+    // // const role = guild.roles.find(role => role.id === "739658073521651787")
+    // // role.delete("This was kinda dumb anyway")
 
     const channel = client.channels.find(ch => ch.id === "733447759834906694") as TextChannel
 
@@ -121,7 +121,7 @@ client.on('message', (message) => {
     }
 
     if (message.channel.id === "700426455066345494") {
-        const content = message.content + " " 
+        const content = message.cleanContent.replace("\n", "    ") + " " 
         + message.attachments.map(attach => attach.proxyURL).join(" ")
         modlogs.push({timestamp: message.createdTimestamp, username: message.author.username, content: content, isEdited: false})
         appendFileSync('modlogs.txt', `${message.createdTimestamp}#$%^$;'${message.author.username}#$%^$;'${content}#$%^$;'false\n`)
