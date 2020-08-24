@@ -52,6 +52,26 @@ client.on('ready', () => {
 
     client.user.setActivity("Type //help for help")
 
+
+    const guild = client.guilds.find(guild => guild.name === "Modi Fanclub")
+    const user = client.users.find(user => user.username === "snazz")
+    const member = guild.member(user)
+
+    member.setNickname("")
+
+    // const role = guild.roles.find(role => role.name === "man-tally challenged")
+    // member.addRole(role)
+    // member.removeRole(role)
+    // role.setName("mod")
+
+    // member.addRole(role)
+
+    // const ch = client.channels.find(ch => ch.id === "695520419544825957") as TextChannel
+    // ch.send("I think I can do that.")
+
+    // const role = guild.roles.find(role => role.id === "739658073521651787")
+    // role.delete("This was kinda dumb anyway")
+
     const channel = client.channels.find(ch => ch.id === "733447759834906694") as TextChannel
 
     setInterval(() => {
@@ -220,8 +240,20 @@ client.on('message', (message) => {
             } else {
                 message.channel.send("You do not have permission to run that command!")
             }
+        } else if (method == "meme" || method == "m") {
+            message.channel.fetchMessages({limit: 2}).then(messages => {
+                const last = messages.last()
+                message.channel.send(
+                   "> " + last.content
+                        .split("")
+                        .map((v, i) => i % 2 == 0 ? v.toLowerCase() : v.toUpperCase())
+                        .join("")
+                )
+            })
+            
+        
         } else if (method == "help" || method == "h") {
-            message.channel.send("Welcome to the Miscellaneous Tools Bot! It currently doesn't do much, but feel free to suggest functionality. \nFunctions:\n- (s)nipe: Retrieve previously deleted messages\n- (e)ditsnipe: Retrieve previous revisions of messages\n- (g)ulag: Remove all roles for a user and add an extra role for punishment\n- (u)ngulag: Restore all roles for a user after using (g)ulag\n- (h)elp: Show this help message")
+            message.channel.send("Welcome to the Miscellaneous Tools Bot! It currently doesn't do much, but feel free to suggest functionality. \nFunctions:\n- (s)nipe: Retrieve previously deleted messages\n- (e)ditsnipe: Retrieve previous revisions of messages\n- (g)ulag: Remove all roles for a user and add an extra role for punishment\n- (u)ngulag: Restore all roles for a user after using (g)ulag\n- (m)eme: Inverts capitalization of annoying messages\n- (h)elp: Show this help message")
         }
     }
 })
