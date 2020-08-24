@@ -269,6 +269,7 @@ client.on('message', (message) => {
                         }
 
                         mock(m)
+                        message.delete()
                     }).catch(() => {
                         sendFail()
                     })
@@ -278,6 +279,7 @@ client.on('message', (message) => {
             } else {
                 message.channel.fetchMessages({limit: 2}).then(messages => {
                     mock(messages.last())
+                    message.delete()
                 })
             }
         } else if (method == "help" || method == "h") {
