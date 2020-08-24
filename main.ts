@@ -241,17 +241,45 @@ client.on('message', (message) => {
                 message.channel.send("You do not have permission to run that command!")
             }
         } else if (method == "mock" || method == "m") {
-            message.channel.fetchMessages({limit: 2}).then(messages => {
-                const last = messages.last()
+            const mock = (m: Message) => {
                 message.channel.send(
-                   "> " + last.content
-                        .split("")
-                        .map((v, i) => i % 2 == 0 ? v.toLowerCase() : v.toUpperCase())
-                        .join("")
-                )
-            })
+                    "> " + m.content
+                         .split("")
+                         .map((v, i) => i % 2 == 0 ? v.toLowerCase() : v.toUpperCase())
+                         .join("")
+                 )
+            } 
+            const sendFail = () => message.channel.send("That URL is invalid, so I couldn't mock whatever annoyance that was :{")
             
-        
+            const vars = message.content.split(" ")
+            if (vars[1] && vars[1].startsWith("https://discordapp.com/channels/")) {
+                const urlscheme = vars[1].split("/")
+                if (urlscheme.length > 6) {
+                    const chID = urlscheme[5]
+                    const messageID = urlscheme[6]
+                    const channel = client.channels.find(ch => chID === ch.id) as TextChannel
+                    if (!channel) {
+                        sendFail()
+                        return
+                    }
+                    channel.fetchMessage(messageID).then(m => {
+                        if (!m) {
+                            sendFail() 
+                            return
+                        }
+
+                        mock(m)
+                    }).catch(() => {
+                        sendFail()
+                    })
+                } else {
+                    sendFail()
+                }
+            } else {
+                message.channel.fetchMessages({limit: 2}).then(messages => {
+                    mock(messages.last())
+                })
+            }
         } else if (method == "help" || method == "h") {
             message.channel.send("Welcome to the Miscellaneous Tools Bot! It currently doesn't do much, but feel free to suggest functionality. \nFunctions:\n- (s)nipe: Retrieve previously deleted messages\n- (e)ditsnipe: Retrieve previous revisions of messages\n- (g)ulag: Remove all roles for a user and add an extra role for punishment\n- (u)ngulag: Restore all roles for a user after using (g)ulag\n- (m)ock: Inverts capitalization of annoying messages\n- (h)elp: Show this help message")
         }
