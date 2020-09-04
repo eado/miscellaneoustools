@@ -1,4 +1,4 @@
-import { Client, Message, Collection, Role, TextChannel } from 'discord.js';
+import { Client, Message, Collection, Role, TextChannel, Permissions } from 'discord.js';
 import { readFileSync, appendFileSync, existsSync, writeFileSync } from 'fs';
 import moment from 'moment';
 
@@ -53,21 +53,24 @@ client.on('ready', () => {
     client.user.setActivity("Type //help for help")
 
 
-    // const guild = client.guilds.find(guild => guild.name === "Modi Fanclub")
-    // const user = client.users.find(user => user.username === "snazz")
-    // const member = guild.member(user)
+//     const guild = client.guilds.find(guild => guild.name === "Modi Fanclub")
+//     const user = client.users.find(user => user.username === "eado")
+//     const member = guild.member(user)
 
-    // member.setNickname("")
+//     // // // member.setNickname("")
+	
+//     const role = guild.roles.find(role => role.name === "haha")
+// //    member.addRole(role)
+//     // // // // member.removeRole(role)
+//   //  role.setName("haha kruthi can't ban me anymore")
+//     //role.setColor("32cf87")
+// //	role.setPosition(43)
 
-    // // const role = guild.roles.find(role => role.name === "man-tally challenged")
-    // // member.addRole(role)
-    // // member.removeRole(role)
-    // // role.setName("mod")
+//     // // // member.addRole(role)
 
-    // // member.addRole(role)
-
-    // // const ch = client.channels.find(ch => ch.id === "695520419544825957") as TextChannel
-    // // ch.send("I think I can do that.")
+    // const ch = client.channels.find(ch => ch.id === "664273671849902083") as TextChannel
+    // ch.rolePermissions(role).add("MANAGE_MESSAGES")
+    // // // ch.send("I think I can do that.")
 
     // // const role = guild.roles.find(role => role.id === "739658073521651787")
     // // role.delete("This was kinda dumb anyway")
@@ -190,7 +193,7 @@ client.on('message', (message) => {
                 message.channel.send("Make sure to mention a user to gulag.")
                 return
             }
-            if (member.hasPermission("ADMINISTRATOR")) {
+            if (member.hasPermission("MANAGE_GUILD")) {
                 const gulagedMember = message.guild.member(gulaged)
                 if (gulagedMember.highestRole.comparePositionTo(member.highestRole) > -1 && gulaged.id != user.id) {
                     message.channel.send(`${gulaged.username} is either the same or higher than you in the role hierarchy :(`)
@@ -217,7 +220,7 @@ client.on('message', (message) => {
                 message.channel.send("Make sure to mention a user to ungulag.")
                 return
             }
-            if (member.hasPermission("ADMINISTRATOR")) {
+            if (member.hasPermission("MANAGE_GUILD")) {
                 const ungulagedMember = message.guild.member(ungulaged)
                 if (ungulagedMember.highestRole.comparePositionTo(member.highestRole) > -1 && ungulaged.id != user.id) {
                     message.channel.send(`${ungulaged.username} is either the same or higher than you in the role hierarchy :(`)
@@ -252,7 +255,7 @@ client.on('message', (message) => {
             const sendFail = () => message.channel.send("That URL is invalid, so I couldn't mock whatever annoyance that was :{")
             
             const vars = message.content.split(" ")
-            if (vars[1] && vars[1].startsWith("https://discordapp.com/channels/")) {
+            if (vars[1] && (vars[1].startsWith("https://discordapp.com/channels/") || vars[1].startsWith("https://discord.com/channels/"))) {
                 const urlscheme = vars[1].split("/")
                 if (urlscheme.length > 6) {
                     const chID = urlscheme[5]
