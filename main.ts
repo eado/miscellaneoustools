@@ -1,4 +1,4 @@
-import { Client, Message, Collection, Role, TextChannel, Permissions } from 'discord.js';
+import { Client, Message, Collection, Role, TextChannel, User, MessageReaction } from 'discord.js';
 import { readFileSync, appendFileSync, existsSync, writeFileSync } from 'fs';
 import moment from 'moment';
 
@@ -8,6 +8,7 @@ const client = new Client();
 
 const messageCache: {[id: string]: Message[]} = {}
 const messageEditCache: {[id: string]: Message[]} = {}
+const reactionCache: {[id: string]: {reaction: MessageReaction, user: User}[]} = {}
 const rolesCache: {[id: string]: {roles: Collection<string, Role>, isSelf: boolean}} = {}
 
 type Log = { timestamp: number; username: string; content: string; isEdited: boolean; }
@@ -53,24 +54,27 @@ client.on('ready', () => {
     client.user.setActivity("Type //help for help")
 
 
-//     const guild = client.guilds.find(guild => guild.name === "Modi Fanclub")
-//     const user = client.users.find(user => user.username === "eado")
-//     const member = guild.member(user)
+//      const guild = client.guilds.find(guild => guild.name === "Modi Fanclub")
+//      const user = client.users.find(user => user.username === "eado")
+//      const member = guild.member(user)
 
-//     // // // member.setNickname("")
+//     // member.setNickname("no but seriously read it")
+
 	
-//     const role = guild.roles.find(role => role.name === "haha")
-// //    member.addRole(role)
-//     // // // // member.removeRole(role)
-//   //  role.setName("haha kruthi can't ban me anymore")
-//     //role.setColor("32cf87")
-// //	role.setPosition(43)
+//      const role = guild.roles.find(role => role.name === "epic")
+//      member.addRole(role)
+//     // role.setColor("")
+//    // member.removeRole(role)
+// //   role.setName("salty")
+// //     //role.setColor("32cf87")
+// 	role.setPosition(45)
 
 //     // // // member.addRole(role)
-
-    // const ch = client.channels.find(ch => ch.id === "664273671849902083") as TextChannel
+//const ch = guild.channels.find(c => c.name === "general")
+//ch.createInvite().then(console.log)
+    // const ch = client.channels.find(ch => ch.id === "694991393994571876") as TextChannel
     // ch.rolePermissions(role).add("MANAGE_MESSAGES")
-    // // // ch.send("I think I can do that.")
+    // ch.send("How sweet of you to say.")
 
     // // const role = guild.roles.find(role => role.id === "739658073521651787")
     // // role.delete("This was kinda dumb anyway")
@@ -115,6 +119,18 @@ client.on('messageUpdate', (old, n) => {
     if (n.channel.id === "700426455066345494") {
         modlogs.push({timestamp: n.editedTimestamp, username: n.author.username, content: n.content, isEdited: true})
         appendFileSync('modlogs.txt', `${n.createdTimestamp}#$%^$;'${n.author.username}#$%^$;'${n.content}#$%^$;'true\n`)
+    }
+})
+
+client.on('messageReactionRemove', (reaction, user) => {
+    if (!reaction.message.guild) {
+        return
+    }
+
+    if (reactionCache[reaction.message.channel.id]) {
+        reactionCache[reaction.message.channel.id].push({reaction, user})
+    } else {
+        reactionCache[reaction.message.channel.id] = [{reaction, user}]
     }
 })
 
@@ -179,6 +195,22 @@ client.on('message', (message) => {
             }
 
             message.channel.send(messageString)
+        } else if (method == "reactionsnipe" || method == "r") {
+                if (!reactionCache[message.channel.id]) {
+                    message.channel.send("There are no recently removed reactions!")
+                    return
+                }
+                
+                const reaction = reactionCache[message.channel.id].pop()
+                if (!reaction) {
+                    message.channel.send("There are no recently removed reactions!")
+                    return
+                }
+    
+                
+                let messageString = `${reaction.user} reacted to "${reaction.reaction.message.cleanContent}" with ${reaction.reaction.emoji}`
+    
+                message.channel.send(messageString)
         } else if (method == "gulag" || method == "g") {
             const user = message.author
             const member = message.guild.member(user)
@@ -286,7 +318,7 @@ client.on('message', (message) => {
                 })
             }
         } else if (method == "help" || method == "h") {
-            message.channel.send("Welcome to the Miscellaneous Tools Bot! It currently doesn't do much, but feel free to suggest functionality. \nFunctions:\n- (s)nipe: Retrieve previously deleted messages\n- (e)ditsnipe: Retrieve previous revisions of messages\n- (g)ulag: Remove all roles for a user and add an extra role for punishment\n- (u)ngulag: Restore all roles for a user after using (g)ulag\n- (m)ock: Inverts capitalization of annoying messages\n- (h)elp: Show this help message")
+            message.channel.send("Welcome to the Miscellaneous Tools Bot! It currently doesn't do much, but feel free to suggest functionality. \nFunctions:\n- (s)nipe: Retrieve previously deleted messages\n- (e)ditsnipe: Retrieve previous revisions of messages\n- (g)ulag: Remove all roles for a user and add an extra role for punishment\n- (u)ngulag: Restore all roles for a user after using (g)ulag\n- (m)ock: Changes capitalization of annoying messages\n- (r)eactionsnipe: Retrieve removed reaction\n- (h)elp: Show this help message")
         }
     }
 })
