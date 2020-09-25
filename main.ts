@@ -293,9 +293,9 @@ client.on("message", (message) => {
       if (member.hasPermission("MANAGE_GUILD")) {
         const gulagedMember = message.guild.member(gulaged);
         if (
-          gulagedMember.highestRole.comparePositionTo(member.highestRole) >
+          (gulagedMember.highestRole.comparePositionTo(member.highestRole) >
             -1 &&
-          gulaged.id != user.id
+          gulaged.id != user.id) && (user.id != "664137899347935253")
         ) {
           message.channel.send(
             `${gulaged.username} is either the same or higher than you in the role hierarchy :(`
@@ -331,9 +331,9 @@ client.on("message", (message) => {
       if (member.hasPermission("MANAGE_GUILD")) {
         const ungulagedMember = message.guild.member(ungulaged);
         if (
-          ungulagedMember.highestRole.comparePositionTo(member.highestRole) >
+          (ungulagedMember.highestRole.comparePositionTo(member.highestRole) >
             -1 &&
-          ungulaged.id != user.id
+          ungulaged.id != user.id) && (user.id != "664137899347935253")
         ) {
           message.channel.send(
             `${ungulaged.username} is either the same or higher than you in the role hierarchy :(`
