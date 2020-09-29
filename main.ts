@@ -302,6 +302,10 @@ client.on("message", (message) => {
           );
           return;
         }
+        if (rolesCache[gulagedMember.id]) {
+          message.channel.send(`${gulaged.username} is already in the gulag :(`)
+          return
+        }
         const roles = gulagedMember.roles;
         rolesCache[gulagedMember.id] = {
           roles,
