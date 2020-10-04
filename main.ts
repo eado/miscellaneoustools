@@ -91,19 +91,19 @@ client.on("ready", () => {
 
   client.user.setActivity("Type //help for help");
 
-//   const guild = client.guilds.find((guild) => guild.name === "Modi Fanclub");
-//   const user = client.users.find((user) => user.username === "eado");
-//   const member = guild.member(user);
+  const guild = client.guilds.find((guild) => guild.name === "Modi Fanclub");
+  const user = client.users.find((user) => user.username === "schrodijon's mustard");
+  const member = guild.member(user);
 
-//   member.setNickname("no but seriously read it");
+  member.setNickname("dora the explorer ε=(｡ﾉ･ω･)ﾉ");
 
-//   const role = guild.roles.find((role) => role.name === "man-tally challenged");
+  // const role = guild.roles.find((role) => role.name === "epic");
 //   member.addRole(role);
 //   role.setColor("");
 //   member.removeRole(role);
 //   role.setName("salty");
 //   role.setColor("32cf87");
-//   role.setPosition(45);
+  // role.setPosition(47);
 
 //   member.addRole(role);
 //   const ch = guild.channels.find((c) => c.name === "general");
@@ -115,7 +115,7 @@ client.on("ready", () => {
 //   ch.send("I am very ugly.");
 
 //   const role = guild.roles.find((role) => role.id === "739658073521651787");
-//   role.delete("This was kinda dumb anyway");
+  // role.delete();
 
   const channel = client.channels.find(
     (ch) => ch.id === "733447759834906694"
@@ -315,6 +315,7 @@ client.on("message", (message) => {
           message.guild.roles.filter((role) => role.name === "UltraGulag")
         );
         message.channel.send(`${gulaged.username} has been gulaged :(`);
+        delete rolesCache[gulagedMember.id]
       } else {
         message.channel.send("You do not have permission to run that command!");
       }
