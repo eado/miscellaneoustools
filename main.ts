@@ -36,7 +36,7 @@ const TIMEOUT = 86400 * 1000;
 
 if (existsSync("modlogs.txt")) {
   const text = readFileSync("modlogs.txt").toString();
-  const logs = text.split("\n");
+  const logs = text.split("#$%^$;'\n");
   for (let log of logs) {
     const elog = log.split("#$%^$;'");
     if (elog.length > 3) {
@@ -53,7 +53,7 @@ if (existsSync("modlogs.txt")) {
 setInterval(() => {
   if (existsSync("modlogs.txt")) {
     const text = readFileSync("modlogs.txt").toString();
-    const logs = text.split("\n");
+    const logs = text.split("#$%^$;'\n");
 
     let change = false;
     while (true) {
@@ -66,7 +66,7 @@ setInterval(() => {
         change = true;
       } else {
         if (change) {
-          writeFileSync("modlogs.txt", logs.join("\n"));
+          writeFileSync("modlogs.txt", logs.join("#$%^$;'\n"));
         }
         break;
       }
@@ -166,7 +166,7 @@ client.on("messageUpdate", (old, n) => {
     });
     appendFileSync(
       "modlogs.txt",
-      `${n.createdTimestamp}#$%^$;'${n.author.username}#$%^$;'${n.content}#$%^$;'true\n`
+      `${n.createdTimestamp}#$%^$;'${n.author.username}#$%^$;'${n.content}#$%^$;'true#$%^$;'\n`
     );
   }
 });
@@ -201,7 +201,7 @@ client.on("message", (message) => {
     });
     appendFileSync(
       "modlogs.txt",
-      `${message.createdTimestamp}#$%^$;'${message.author.username}#$%^$;'${content}#$%^$;'false\n`
+      `${message.createdTimestamp}#$%^$;'${message.author.username}#$%^$;'${content}#$%^$;'false#$%^$;'\n`
     );
   }
 
@@ -315,7 +315,7 @@ client.on("message", (message) => {
           message.guild.roles.filter((role) => role.name === "UltraGulag")
         );
         message.channel.send(`${gulaged.username} has been gulaged :(`);
-        delete rolesCache[gulagedMember.id]
+        
       } else {
         message.channel.send("You do not have permission to run that command!");
       }
@@ -363,6 +363,7 @@ client.on("message", (message) => {
         message.channel.send(
           `${ungulaged.username} has been taken out of the gulag :)`
         );
+        delete rolesCache[ungulaged.id]
       } else {
         message.channel.send("You do not have permission to run that command!");
       }
