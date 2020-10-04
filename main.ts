@@ -91,11 +91,11 @@ client.on("ready", () => {
 
   client.user.setActivity("Type //help for help");
 
-  const guild = client.guilds.find((guild) => guild.name === "Modi Fanclub");
-  const user = client.users.find((user) => user.username === "schrodijon's mustard");
-  const member = guild.member(user);
+  // const guild = client.guilds.find((guild) => guild.name === "Modi Fanclub");
+  // const user = client.users.find((user) => user.username === "schrodijon's mustard");
+  // const member = guild.member(user);
 
-  member.setNickname("dora the explorer ε=(｡ﾉ･ω･)ﾉ");
+  // member.setNickname("dora the explorer ε=(｡ﾉ･ω･)ﾉ");
 
   // const role = guild.roles.find((role) => role.name === "epic");
 //   member.addRole(role);
