@@ -205,13 +205,13 @@ client.on("message", (message) => {
     );
   }
 
-  if (message.guild.id === "656696063859621888") {
-    message.channel.send("Sorry, Miscellaneous Tools has been disabled on this server. Please contact your system administrator for more information.")
-    return
-  }
-
   if (message.content.startsWith("//")) {
     const method = message.content.split(" ")[0].replace("//", "");
+
+    if (message.guild.id === "656696063859621888") {
+      message.channel.send("Sorry, Miscellaneous Tools has been disabled on this server. Please contact your system administrator for more information.")
+      return
+    }
 
     if (method == "snipe" || method == "s") {
       if (!messageCache[message.channel.id]) {
