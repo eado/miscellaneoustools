@@ -30,49 +30,8 @@ type Log = {
   isEdited: boolean;
 };
 
-const modlogs: Log[] = [];
 
-const TIMEOUT = 86400 * 1000;
 
-if (existsSync("modlogs.txt")) {
-  const text = readFileSync("modlogs.txt").toString();
-  const logs = text.split("#$%^$;'\n");
-  for (let log of logs) {
-    const elog = log.split("#$%^$;'");
-    if (elog.length > 3) {
-      modlogs.push({
-        timestamp: Number(elog[0]),
-        username: elog[1],
-        content: elog[2],
-        isEdited: elog[3] === "true",
-      });
-    }
-  }
-}
-
-setInterval(() => {
-  if (existsSync("modlogs.txt")) {
-    const text = readFileSync("modlogs.txt").toString();
-    const logs = text.split("#$%^$;'\n");
-
-    let change = false;
-    while (true) {
-      if (
-        logs.length > 0 &&
-        logs[0].split("#$%^$;'").length > 1 &&
-        Date.now() - Number(logs[0].split("#$%^$;'")[0]) >= TIMEOUT
-      ) {
-        logs.shift();
-        change = true;
-      } else {
-        if (change) {
-          writeFileSync("modlogs.txt", logs.join("#$%^$;'\n"));
-        }
-        break;
-      }
-    }
-  }
-}, 5000);
 
 const cleanFormatting = (str: string) => {
     str.replace("__", "\\_\\_")
@@ -91,47 +50,7 @@ client.on("ready", () => {
 
   client.user.setActivity("Type //help for help");
 
-  // const guild = client.guilds.find((guild) => guild.name === "Modi Fanclub");
-  // const user = client.users.find((user) => user.username === "schrodijon's mustard");
-  // const member = guild.member(user);
-
-  // member.setNickname("dora the explorer ε=(｡ﾉ･ω･)ﾉ");
-
-  // const role = guild.roles.find((role) => role.name === "epic");
-//   member.addRole(role);
-//   role.setColor("");
-//   member.removeRole(role);
-//   role.setName("salty");
-//   role.setColor("32cf87");
-  // role.setPosition(47);
-
-//   member.addRole(role);
-//   const ch = guild.channels.find((c) => c.name === "general");
-//   ch.createInvite().then(console.log);
-//   const ch = client.channels.find(
-//     (ch) => ch.id === "695520419544825957"
-//   ) as TextChannel;
-//   ch.rolePermissions(role).add("MANAGE_MESSAGES");
-//   ch.send("I am very ugly.");
-
-//   const role = guild.roles.find((role) => role.id === "739658073521651787");
-  // role.delete();
-
-  const channel = client.channels.find(
-    (ch) => ch.id === "733447759834906694"
-  ) as TextChannel;
-
-  setInterval(() => {
-    if (modlogs.length < 1) {
-      return;
-    }
-    if (Date.now() - modlogs[0].timestamp >= TIMEOUT) {
-      const log = modlogs.shift();
-      channel.send(
-        `${log?.username}${log?.isEdited ? " (Edited)" : ""}: ${log?.content}`
-      );
-    }
-  }, 1);
+  
 });
 
 client.on("messageDelete", (message) => {
@@ -188,22 +107,6 @@ client.on("message", (message) => {
     return;
   }
 
-  if (message.channel.id === "700426455066345494") {
-    const content =
-      message.cleanContent.replace("\n", "    ") +
-      " " +
-      message.attachments.map((attach) => attach.proxyURL).join(" ");
-    modlogs.push({
-      timestamp: message.createdTimestamp,
-      username: message.author.username,
-      content: content,
-      isEdited: false,
-    });
-    appendFileSync(
-      "modlogs.txt",
-      `${message.createdTimestamp}#$%^$;'${message.author.username}#$%^$;'${content}#$%^$;'false#$%^$;'\n`
-    );
-  }
 
   if (message.content.startsWith("//")) {
     const method = message.content.split(" ")[0].replace("//", "");
