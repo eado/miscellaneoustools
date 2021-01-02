@@ -75,19 +75,6 @@ client.on("messageUpdate", (old, n) => {
   } else {
     messageEditCache[old.channel.id] = [old];
   }
-
-  if (n.channel.id === "700426455066345494") {
-    modlogs.push({
-      timestamp: n.editedTimestamp,
-      username: n.author.username,
-      content: n.content,
-      isEdited: true,
-    });
-    appendFileSync(
-      "modlogs.txt",
-      `${n.createdTimestamp}#$%^$;'${n.author.username}#$%^$;'${n.content}#$%^$;'true#$%^$;'\n`
-    );
-  }
 });
 
 client.on("messageReactionRemove", (reaction, user) => {
