@@ -115,7 +115,7 @@ client.on("message", (message) => {
           "MMMM Do, h:mm:ss a"
         );
 
-        messageString = `${deletedMessage.author} @${messageTime}\n > ${deletedMessage.content}`;
+        messageString = `${deletedMessage.author} on ${messageTime}\n> ${deletedMessage.content}`;
       }
 
       for (let attach of Array.from(deletedMessage.attachments.values())) {
@@ -138,7 +138,7 @@ client.on("message", (message) => {
       let messageTime = moment(editedMessage.createdTimestamp).format(
         "MMMM Do, h:mm:ss a"
       );
-      let messageString = `${editedMessage.author} @${messageTime}\n> ${editedMessage.content}`;
+      let messageString = `${editedMessage.author} on ${messageTime}\n> ${editedMessage.content}`;
 
       for (let attach of Array.from(editedMessage.attachments.values())) {
         messageString += attach.proxyURL + " ";
