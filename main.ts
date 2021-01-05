@@ -7,7 +7,7 @@ import {
   User,
   MessageReaction,
 } from "discord.js";
-import { readFileSync, appendFileSync, existsSync, writeFileSync } from "fs";
+import { readFileSync } from "fs";
 import moment from "moment";
 
 const token = JSON.parse(readFileSync("config.json", "utf8")).token;
@@ -22,16 +22,6 @@ const reactionCache: {
 const rolesCache: {
   [id: string]: { roles: Collection<string, Role>; isSelf: boolean };
 } = {};
-
-type Log = {
-  timestamp: number;
-  username: string;
-  content: string;
-  isEdited: boolean;
-};
-
-
-
 
 const cleanFormatting = (str: string) => {
     str.replace("__", "\\_\\_")
@@ -50,7 +40,6 @@ client.on("ready", () => {
 
   client.user.setActivity("Type //help for help");
 
-  
 });
 
 client.on("messageDelete", (message) => {
@@ -126,7 +115,7 @@ client.on("message", (message) => {
           "MMMM Do, h:mm:ss a"
         );
 
-        messageString = `${deletedMessage.author} @${messageTime}: ${deletedMessage.content}`;
+        messageString = `${deletedMessage.author} @${messageTime}\n > ${deletedMessage.content}`;
       }
 
       for (let attach of Array.from(deletedMessage.attachments.values())) {
@@ -149,7 +138,7 @@ client.on("message", (message) => {
       let messageTime = moment(editedMessage.createdTimestamp).format(
         "MMMM Do, h:mm:ss a"
       );
-      let messageString = `${editedMessage.author} @${messageTime}: ${editedMessage.content}`;
+      let messageString = `${editedMessage.author} @${messageTime}\n> ${editedMessage.content}`;
 
       for (let attach of Array.from(editedMessage.attachments.values())) {
         messageString += attach.proxyURL + " ";

@@ -4,11 +4,12 @@
   "description": "A bot with miscellaneous tools",
   "main": "build/main.js",
   "dependencies": {
-    "@discordjs/opus": "^0.3.2",
-    "@types/node": "^13.7.4",
-    "discord.js": "^11.5.1",
-    "moment": "^2.27.0",
-    "typescript": "^3.8.2"
+    "@discordjs/opus": "^0.3.3",
+    "@types/node": "^13.13.38",
+    "discord.js": "^11.6.4",
+    "moment": "^2.29.1",
+    "requests": "^0.3.0",
+    "typescript": "^3.9.7"
   },
   "devDependencies": {},
   "scripts": {
