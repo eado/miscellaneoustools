@@ -89,7 +89,7 @@ client.on("message", async (message) => {
     return;
   }
 
-  if (message.author.bot) {
+  if (message.author.bot && message.author.id !== "818949194571448383") {
     return
   }
 
