@@ -101,6 +101,11 @@ client.on("message", async (message) => {
       return
     }
 
+    if (message.author.id === "345428326908952586") {
+      message.channel.send("Shut up, William!")
+      return
+    }
+
     if (method == "snipe" || method == "s") {
       if (!messageCache[message.channel.id]) {
         message.channel.send("There are no recently deleted messages!");
