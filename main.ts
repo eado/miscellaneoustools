@@ -102,8 +102,10 @@ client.on("message", async (message) => {
     }
 
     if (message.author.id === "345428326908952586") {
-      message.channel.send("Shut up, William!")
-      return
+      if (Math.random() <= 0.90) {
+        message.channel.send("Shut up, William!")
+        return
+      }
     }
 
     if (method == "snipe" || method == "s") {
