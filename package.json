@@ -7,7 +7,7 @@
     "@discordjs/opus": "^0.3.3",
     "@types/node": "^13.13.38",
     "discord.js": "^12.5.1",
-    "moment": "^2.29.1",
+    "moment": "^2.29.4",
     "requests": "^0.3.0",
     "typescript": "^3.9.7"
   },
